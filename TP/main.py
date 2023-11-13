@@ -1,77 +1,70 @@
-import simpy
+import random
 
-class Carro:
-    def __init__(self, id, destino, env):
-        self.id = id
-        self.destino = destino
-        self.env = env
-        self.tempo_inicio = env.now
-        self.tempo_viagem = 0
-        self.env.process(self.viagem())
 
-    def viagem(self):
-        # Tempo de viagem fixo
-        tempo_viagem_fixo = 10  # Tempo de viagem fixo para cada carro
-        yield self.env.timeout(tempo_viagem_fixo)
-        self.tempo_viagem = self.env.now - self.tempo_inicio
 
 class Semaforo:
-    def __init__(self, id, env):
-        self.id = id
-        self.env = env
-        self.estado = "vermelho"
-        self.fila_carros = 0
-        self.env.process(self.run())
-
-    def run(self):
-        while True:
-            self.estado = "verde"
-            print(f"Semaforo {self.id} está agora verde.")
-            # Lógica para mudar o estado do semáforo
-            yield self.env.timeout(1)  # Timeout representa a duração do estado atual
-
-    def receber_info_trafego(self, carros):
-        self.fila_carros = carros
-
-class Cruzamento:
-    def __init__(self, id, semaforos):
-        self.id = id
-        self.semaforos = semaforos
-
-    # Método para sincronizar semáforos, se necessário
-
-class Ambiente:
+    N_SEMAFORO = 0
     def __init__(self):
-        self.env = simpy.Environment()
-        self.destinos = ["Destino1", "Destino2", "Destino3"]  # Destinos fixos
-        self.cruzamentos = self.criar_cruzamentos()
-        self.carros = self.criar_carros()
+        Semaforo.N_SEMAFORO += 1
+        self.id = Semaforo.N_SEMAFORO
+        self.estado_semaforo = "Vermelho"
+        self.tempo_estado = 0
 
-    def criar_cruzamentos(self):
-        # Cria cruzamentos e seus semáforos
-        return [Cruzamento(id, [Semaforo(i, self.env) for i in range(4)]) for id in range(N)]
+class Rua:
+    N_RUA = 0
+    def __init__(self, rua, n_carros, semaforo):
+        Rua.N_RUA += 1
+        self.id = Rua.N_RUA
+        self.rua = rua
+        self.n_carros = n_carros
+        self.semaforo = semaforo
 
-    def criar_carros(self):
-        # Atribui destinos fixos aos carros
-        carros = []
-        for id in range(M):
-            destino = self.destinos[id % len(self.destinos)]
-            carros.append(Carro(id, destino, self.env))
-        return carros
+    def __str__(self):
+        return f"ID RUA: {self.id} | Rua: {self.rua}, Número de Carros: {self.n_carros}, Semaforo ID: {self.semaforo.id}, Estado do Semaforo: {self.semaforo.estado_semaforo}"
 
-    def executar(self):
-        self.env.run(until=TEMPO_SIMULACAO)
-        self.calcular_tempo_total()
 
-    def calcular_tempo_total(self):
-        tempo_total = sum(carro.tempo_viagem for carro in self.carros)
-        print(f"Tempo total de viagem de todos os carros: {tempo_total} unidades de tempo.")
+def gerar_nome_rua():
+    nomes = ["Machado", "Camões", "Afonso", "Beatriz", "Clara"]
+    caracteristicas = ["Monte", "Vale", "Rio", "Lago", "Jardim"]
+    plantas = ["Carvalho", "Cedro", "Pinheiro", "Rosa", "Lírio"]
+    sufixos = ["Rua", "Avenida", "Travessa", "Largo", "Praça"]
 
-# Parâmetros da simulação
-N = 5  # Número de cruzamentos
-M = 20  # Número de carros
-TEMPO_SIMULACAO = 100
+    nome = random.choice(nomes)
+    caracteristica = random.choice(caracteristicas)
+    planta = random.choice(plantas)
+    sufixo = random.choice(sufixos)
 
-# Inicializando e executando a simulação
-ambiente = Ambiente()
-ambiente.executar()
+    nome_rua = f"{sufixo} {nome} {caracteristica} {planta}"
+
+    return nome_rua
+
+def criar_ambiente():
+    
+    s1 = Semaforo()
+    s2 = Semaforo()
+    s3 = Semaforo()
+    s4 = Semaforo()
+
+    ruas = [] 
+
+    ruas.append(Rua(gerar_nome_rua(), 5, s1))
+    ruas.append(Rua(gerar_nome_rua(), 5, s2))
+    ruas.append(Rua(gerar_nome_rua(), 5, s3))
+    ruas.append(Rua(gerar_nome_rua(), 5, s4))
+
+    return ruas
+
+def main():
+    ruas = criar_ambiente()
+
+    for rua in ruas:
+        if rua.id == 1:
+            estado_semaforo = rua.semaforo.estado_semaforo
+            print(f"Estado do Semaforo da Rua com ID 1: {estado_semaforo}")
+            break
+
+    
+
+if __name__ == "__main__":
+    main()
+
