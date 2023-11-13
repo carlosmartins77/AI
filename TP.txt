@@ -1,0 +1,9 @@
+Construir um sistema multiagente para gerir os semáforo numa cidade. Cada semaforo é um agente (Agente multiagente)
+	- Vamos ter de gerar o ambiente: carros e cruzamentos... -> Ver sistema gerturde Lisboa
+
+Estes agentes tem de colaborar entre si.
+	Tem objetivos, por exemplo, um carro nao pode esperar mais do que X tempo.., mas por exemplo, ter em consideraçao se nao houver ninguem na estrada, fechar os outros semaforos e abrir o semaforo do gajo 	sozinho.
+	As filas nao podem ter mais do que X carros.. 
+
+Qualquer agente inteligente tem de ter uma medida de desempenho.. Por exemplo, neste caso, este sistema multiagente tem de ser melhor doq ue nao haver nenhum, por exmeplo, semaforos com temporizador.
+
